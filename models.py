@@ -169,6 +169,24 @@ class User(db.Model):
 
         return False
 
+    
+    @classmethod
+    def check_pw(cls, id, password):
+        """Check `password`.
+
+        This is a class method (call it on the class, not an individual user.)
+        It checks against a specific user to see if password provided matches.
+        If not matching, return False.
+        """
+
+        user = cls.query.filter_by(id=id).first()
+
+        if user:
+            is_auth = bcrypt.check_password_hash(user.password, password)
+            if is_auth:
+                return True
+
+        return False
 
 class Message(db.Model):
     """An individual message ("warble")."""

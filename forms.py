@@ -18,6 +18,18 @@ class UserAddForm(FlaskForm):
     image_url = StringField('(Optional) Image URL')
 
 
+class UserUpdateForm(FlaskForm):
+    """Form for adding users."""
+
+    username = StringField('Username')
+    email = StringField('E-mail')
+    image_url = StringField('(Optional) Profile Image URL')
+    header_image_url = StringField('(Optional) Header Image URL')
+    bio = StringField('(Optional) Bio')
+    location = StringField('(Optional) Location')
+    password = PasswordField('Please enter your password to save updates.')
+
+
 class LoginForm(FlaskForm):
     """Login form."""
 
