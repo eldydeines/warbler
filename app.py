@@ -324,11 +324,14 @@ def homepage():
     """
 
     if g.user:
+        # I was having trouble using the list of Ids and had to reference the solution for this one. 
+        following_ids = [following.id for following in g.user.following]
+        following_ids.append(g.user.id)
         messages = (Message
                     .query
+                    .filter(Message.user_id.in_(following_ids))
                     .order_by(Message.timestamp.desc())
-                    .limit(100)
-                    .all())
+                    .limit(100))
 
         return render_template('home.html', messages=messages)
 
