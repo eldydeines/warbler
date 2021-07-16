@@ -310,7 +310,22 @@ def messages_destroy(message_id):
 
     return redirect(f"/users/{g.user.id}")
 
+@app.route('/messages')
+def show_all_messages():
+    """Show all messages."""
 
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    messages = (Message
+                .query
+                .order_by(Message.timestamp.desc())
+                .limit(100)
+                .all())
+
+    return render_template('messages/messages.html', messages=messages)
+    
 ##############################################################################
 # Homepage and error pages
 
