@@ -324,7 +324,7 @@ def show_all_messages():
                 .limit(100)
                 .all())
 
-    return render_template('messages/messages.html', messages=messages)
+    return render_template('/messages/messages.html', messages=messages)
     
 ##############################################################################
 # Homepage and error pages
