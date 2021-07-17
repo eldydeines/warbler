@@ -1,11 +1,12 @@
 import os
+from threading import ThreadError
 
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm, MessageForm, UserUpdateForm
-from models import db, connect_db, User, Message
+from models import db, connect_db, User, Message, Likes
 
 CURR_USER_KEY = "curr_user"
 
@@ -21,6 +22,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 toolbar = DebugToolbarExtension(app)
+
 
 connect_db(app)
 
@@ -151,7 +153,10 @@ def users_show(user_id):
                 .order_by(Message.timestamp.desc())
                 .limit(100)
                 .all())
-    return render_template('users/show.html', user=user, messages=messages)
+
+    current_user_likes = Likes.query.filter(Likes.user_id==g.user.id).all()
+    
+    return render_template('users/show.html', user=user, messages=messages, likes=current_user_likes)
 
 
 @app.route('/users/<int:user_id>/following')
@@ -326,6 +331,27 @@ def show_all_messages():
 
     return render_template('/messages/messages.html', messages=messages)
     
+
+@app.route('/messages/<int:message_id>/<int:user_id>/like', methods=["POST"])
+def message_like(message_id,user_id):
+    """Get all likes to compare what is liked and not liked and to update"""
+    is_liked = Likes.query.filter((Likes.user_id==g.user.id),(Likes.message_id==message_id)).one_or_none()
+    if is_liked: 
+        print("**************************")
+        print("I am already liked so unlike me")
+        print("**************************")
+        db.session.delete(is_liked)
+    else:
+        print("**************************")
+        print("I havent been liked before now make me liked")
+        print("**************************")
+        new_like = Likes(user_id=g.user.id, message_id=message_id)
+        db.session.add(new_like)
+         
+    db.session.commit()
+    
+    return redirect(f"/users/{user_id}")
+
 ##############################################################################
 # Homepage and error pages
 
@@ -370,3 +396,5 @@ def add_header(req):
     req.headers["Expires"] = "0"
     req.headers['Cache-Control'] = 'public, max-age=0'
     return req
+
+

@@ -8,12 +8,9 @@
     {% for message in messages %}
 
     <li class="list-group-item">
-      <a href="/messages/{{ message.id }}" class="message-link" />
-
       <a href="/users/{{ user.id }}">
         <img src="{{ user.image_url }}" alt="user image" class="timeline-image">
       </a>
-
       <div class="message-area">
         <a href="/users/{{ user.id }}">@{{ user.username }}</a>
         <span class="text-muted">{{ message.timestamp.strftime('%d %B %Y') }}</span>
@@ -21,10 +18,24 @@
       </div>
 
       {% if user.id != g.user.id %}
-      <form method="POST" action="/messages/{{ message.id }}/like" class="messages-like">
-        <button class="text-right btn btn-sm {{'btn-primary'}}">
+      <form method="POST" action="/messages/{{ message.id }}/{{ user.id }}/like" class="messages-like">
+
+        {% set count = 0 %}
+        {% for like in likes %}
+        {% if like.message_id == message.id %}
+        <button class="text-right btn btn-sm {{'btn-danger'}}">
+          <i class="fa fa-heart"></i>
+        </button>
+        {% endif %}
+        {% set count = count + 1 %}
+        {% endfor %}
+        {% if count != likes|length %}
+        <button class="text-right btn btn-sm {{'btn-secondary'}}">
           <i class="fa fa-thumbs-up"></i>
         </button>
+        {% endif %}
+
+
       </form>
       {% endif %}
 
