@@ -155,8 +155,6 @@ def users_show(user_id):
                 .all())
 
     current_user_likes = Likes.query.filter(Likes.user_id==g.user.id).all()
-    print("**************************")
-    print(current_user_likes)
     
     return render_template('users/show.html', user=user, messages=messages, likes=current_user_likes)
 
@@ -349,6 +347,7 @@ def message_like(message_id,user_id):
     """Get all likes to compare what is liked and not liked and to update"""
     is_liked = Likes.query.filter(Likes.user_id==g.user.id).filter(Likes.message_id==message_id).one_or_none()
     if is_liked: 
+
         db.session.delete(is_liked)
     else:
         new_like = Likes(user_id=g.user.id, message_id=message_id)
