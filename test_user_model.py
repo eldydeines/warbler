@@ -13,7 +13,7 @@ db.create_all()
 
 
 class UserModelTestCase(TestCase):
-    """Test views for messages."""
+    """Test views for user model."""
 
     def setUp(self):
         """Create test client, add sample data."""
@@ -104,9 +104,10 @@ class UserModelTestCase(TestCase):
         #with exception need to rollback commit
         db.session.rollback()
         #Not unique email should raise error
-        invalid_user_1 = User.signup("fake_user4", "faker1@faker.com", "password", None)
+        invalid_user_2 = User.signup("fake_user4", None, "password", None)
         with self.assertRaises(exc.IntegrityError) as context:
             db.session.commit()
+        db.session.rollback()
 
     def test_authenticate(self):
         """Testing validation User.authentical"""
@@ -118,3 +119,10 @@ class UserModelTestCase(TestCase):
 
         self.assertIs(self.user1, status_returned_user)
         self.assertFalse(status_returned_bad_info)
+
+    def tearDown(self):
+        """Clean Up Data"""
+        User.query.delete()
+        Message.query.delete()
+        Follows.query.delete()
+        db.session.commit()
