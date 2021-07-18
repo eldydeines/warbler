@@ -5,7 +5,7 @@ from unittest import TestCase
 from sqlalchemy import exc
 from models import db, User, Message, Follows
 
-os.environ['DATABASE_URL'] = "postgresql:///warbler"
+os.environ['DATABASE_URL'] = "postgresql:///warbler-test"
 
 from app import app, users_followers
 
