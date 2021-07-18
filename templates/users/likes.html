@@ -1,0 +1,36 @@
+{% extends 'users/detail.html' %}
+{% block user_details %}
+
+
+<div class="col-sm-6">
+    <ul class="list-group" id="messages">
+
+        {% for msg_liked in user.likes %}
+
+        <li class="list-group-item">
+            <a href="/messages/{{ msg_liked.id  }}" class="message-link" />
+            <a href="/users/{{ msg_liked.user.id }}">
+                <img src="{{ msg_liked.user.image_url }}" alt="user image" class="timeline-image">
+            </a>
+            <div class="message-area">
+                <a href="/users/{{ msg_liked.user.id }}">@{{ msg_liked.user.username }}</a>
+                <p>{{ msg_liked.text }}</p>
+            </div>
+
+            {% if user.id != g.user.id %}
+            <form method="POST" action="/messages/{{ msg_liked.id }}" class="messages-like">
+                <button class="text-right btn btn-sm {{'btn-danger'}}">
+                    <i class="fa fa-heart"></i>
+                </button>
+
+            </form>
+            {% endif %}
+
+        </li>
+
+        {% endfor %}
+
+    </ul>
+</div>
+
+{% endblock %}

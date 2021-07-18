@@ -20,22 +20,20 @@
       {% if user.id != g.user.id %}
       <form method="POST" action="/messages/{{ message.id }}/{{ user.id }}/like" class="messages-like">
 
-        {% set count = 0 %}
+
         {% for like in likes %}
+
         {% if like.message_id == message.id %}
         <button class="text-right btn btn-sm {{'btn-danger'}}">
           <i class="fa fa-heart"></i>
         </button>
         {% endif %}
-        {% set count = count + 1 %}
+
         {% endfor %}
-        {% if count != likes|length %}
+
         <button class="text-right btn btn-sm {{'btn-secondary'}}">
           <i class="fa fa-thumbs-up"></i>
         </button>
-        {% endif %}
-
-
       </form>
       {% endif %}
 

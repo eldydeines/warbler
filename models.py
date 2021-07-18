@@ -17,13 +17,13 @@ class Follows(db.Model):
     user_being_followed_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete="cascade"),
-        primary_key=True,
+        primary_key=True
     )
 
     user_following_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete="cascade"),
-        primary_key=True,
+        primary_key=True
     )
 
 
@@ -34,7 +34,8 @@ class Likes(db.Model):
 
     id = db.Column(
         db.Integer,
-        primary_key=True
+        primary_key=True,
+        autoincrement=True
     )
 
     user_id = db.Column(
@@ -44,8 +45,7 @@ class Likes(db.Model):
 
     message_id = db.Column(
         db.Integer,
-        db.ForeignKey('messages.id', ondelete='cascade'),
-        unique=True
+        db.ForeignKey('messages.id', ondelete='cascade')
     )
 
 
@@ -56,24 +56,24 @@ class User(db.Model):
 
     id = db.Column(
         db.Integer,
-        primary_key=True,
+        primary_key=True
     )
 
     email = db.Column(
         db.Text,
         nullable=False,
-        unique=True,
+        unique=True
     )
 
     username = db.Column(
         db.Text,
         nullable=False,
-        unique=True,
+        unique=True
     )
 
     image_url = db.Column(
         db.Text,
-        default="/static/images/default-pic.png",
+        default="/static/images/default-pic.png"
     )
 
     header_image_url = db.Column(
@@ -82,16 +82,16 @@ class User(db.Model):
     )
 
     bio = db.Column(
-        db.Text,
+        db.Text
     )
 
     location = db.Column(
-        db.Text,
+        db.Text
     )
 
     password = db.Column(
         db.Text,
-        nullable=False,
+        nullable=False
     )
 
     messages = db.relationship('Message')
@@ -143,7 +143,7 @@ class User(db.Model):
             username=username,
             email=email,
             password=hashed_pwd,
-            image_url=image_url,
+            image_url=image_url
         )
 
         db.session.add(user)
@@ -195,24 +195,24 @@ class Message(db.Model):
 
     id = db.Column(
         db.Integer,
-        primary_key=True,
+        primary_key=True
     )
 
     text = db.Column(
         db.String(140),
-        nullable=False,
+        nullable=False
     )
 
     timestamp = db.Column(
         db.DateTime,
         nullable=False,
-        default=datetime.utcnow(),
+        default=datetime.utcnow()
     )
 
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='CASCADE'),
-        nullable=False,
+        nullable=False
     )
 
     user = db.relationship('User')

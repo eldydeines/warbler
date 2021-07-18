@@ -155,9 +155,21 @@ def users_show(user_id):
                 .all())
 
     current_user_likes = Likes.query.filter(Likes.user_id==g.user.id).all()
+    print("**************************")
+    print(current_user_likes)
     
     return render_template('users/show.html', user=user, messages=messages, likes=current_user_likes)
 
+@app.route('/users/<int:user_id>/likes')
+def show_likes(user_id):
+    """Show list of liked messages for this user."""
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    else:
+        user = User.query.get_or_404(user_id)
+        user_likes = [msg.id for msg in g.user.likes]
+    return render_template('users/likes.html', user=user, likes=user_likes)
 
 @app.route('/users/<int:user_id>/following')
 def show_following(user_id):
@@ -335,7 +347,7 @@ def show_all_messages():
 @app.route('/messages/<int:message_id>/<int:user_id>/like', methods=["POST"])
 def message_like(message_id,user_id):
     """Get all likes to compare what is liked and not liked and to update"""
-    is_liked = Likes.query.filter((Likes.user_id==g.user.id),(Likes.message_id==message_id)).one_or_none()
+    is_liked = Likes.query.filter(Likes.user_id==g.user.id).filter(Likes.message_id==message_id).one_or_none()
     if is_liked: 
         print("**************************")
         print("I am already liked so unlike me")
@@ -373,8 +385,8 @@ def homepage():
                     .filter(Message.user_id.in_(following_ids))
                     .order_by(Message.timestamp.desc())
                     .limit(100))
-
-        return render_template('home.html', messages=messages)
+        current_user_likes = Likes.query.filter(Likes.user_id==g.user.id).all()
+        return render_template('home.html', messages=messages, likes=current_user_likes)
 
     else:
         return render_template('home-anon.html')
