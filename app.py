@@ -21,7 +21,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
-toolbar = DebugToolbarExtension(app)
+#toolbar = DebugToolbarExtension(app)
 
 
 connect_db(app)
@@ -349,14 +349,8 @@ def message_like(message_id,user_id):
     """Get all likes to compare what is liked and not liked and to update"""
     is_liked = Likes.query.filter(Likes.user_id==g.user.id).filter(Likes.message_id==message_id).one_or_none()
     if is_liked: 
-        print("**************************")
-        print("I am already liked so unlike me")
-        print("**************************")
         db.session.delete(is_liked)
     else:
-        print("**************************")
-        print("I havent been liked before now make me liked")
-        print("**************************")
         new_like = Likes(user_id=g.user.id, message_id=message_id)
         db.session.add(new_like)
          
